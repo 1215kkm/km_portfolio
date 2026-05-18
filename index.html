@@ -197,7 +197,7 @@
          - 사이즈를 100px 증가: w-64 h-80(256x320) → w-[356px] h-[420px]
          =========================================================== -->
     <div id="hero-image" class="fixed md:w-[600px] overflow-hidden z-30 will-change-transform bottom100">
-        <img src="images/km1.png" alt="">
+        <img id="hero-img" src="images/km1.png" alt="">
     </div>
 
     <!-- 통합 컨테이너 -->
@@ -791,6 +791,43 @@
                     },
                     immediateRender: false,       // ★ 이어받기
                     opacity: 0
+                });
+            });
+
+            // ==========================================
+            // ★ 섹션 전환 시 강사 이미지 교체 (km1 → km2 → km3 → km4)
+            //   섹션1·2·3·4를 지날 때마다 부드럽게 페이드되며 바뀜
+            // ==========================================
+            const heroImg = document.getElementById('hero-img');
+            const heroImageSrcs = {
+                1: 'images/km1.png',
+                2: 'images/km2.png',
+                3: 'images/km3.png',
+                4: 'images/km4.png'
+            };
+            let currentHeroImg = 1;
+
+            function swapHeroImage(n) {
+                if (n === currentHeroImg || !heroImageSrcs[n]) return;
+                currentHeroImg = n;
+                gsap.to(heroImg, {
+                    opacity: 0,
+                    duration: 0.25,
+                    ease: 'power1.in',
+                    onComplete: () => {
+                        heroImg.src = heroImageSrcs[n];
+                        gsap.to(heroImg, { opacity: 1, duration: 0.25, ease: 'power1.out' });
+                    }
+                });
+            }
+
+            [1, 2, 3, 4].forEach((n) => {
+                ScrollTrigger.create({
+                    trigger: `#section${n}`,
+                    start: 'top center',
+                    end: 'bottom center',
+                    onEnter: () => swapHeroImage(n),
+                    onEnterBack: () => swapHeroImage(n)
                 });
             });
 
