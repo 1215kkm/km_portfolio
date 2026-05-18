@@ -799,6 +799,7 @@
             //   섹션1·2·3·4를 지날 때마다 부드럽게 페이드되며 바뀜
             // ==========================================
             const heroImg = document.getElementById('hero-img');
+            const heroImageBox = document.getElementById('hero-image');
             const heroImageSrcs = {
                 1: 'images/km1.png',
                 2: 'images/km2.png',
@@ -829,6 +830,18 @@
                     onEnter: () => swapHeroImage(n),
                     onEnterBack: () => swapHeroImage(n)
                 });
+            });
+
+            // 섹션2(bg-black)가 화면에 보이는 동안에는 multiply 블렌드가
+            // 이미지를 검게 만들어 사라지므로 normal 로 전환한다.
+            // 그 외 밝은 섹션에서는 기존 multiply(종이 질감과 자연스럽게 합성) 유지.
+            ScrollTrigger.create({
+                trigger: '#section2',
+                start: 'top bottom',
+                end: 'bottom top',
+                onToggle: (self) => {
+                    heroImageBox.style.mixBlendMode = self.isActive ? 'normal' : 'multiply';
+                }
             });
 
             // 히스토리 텍스트 등장
